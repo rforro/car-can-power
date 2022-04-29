@@ -15,7 +15,7 @@
 
 #define CAN_FQ 100E3
 #define FILTER_ID 0x130
-#define RELAY_PIN 16
+#define RELAY_PIN 32
 #define RESET_INTERVAL_SEC 30
 
 bool power_on = false;
@@ -34,9 +34,7 @@ void onCanReceive(int packetSize)
   {
     int msg_byte_content = CAN.read();
 
-    if (msg_byte_content == 0x45) Sprintln("DONE");
-
-    if (msg_byte == 0 && msg_byte_content == 0x00)
+    if (msg_byte == 0 && (msg_byte_content == 0x00 || msg_byte_content == 0x40))
     {
       power_on = false;
     }
@@ -87,5 +85,7 @@ void setup()
 }
 
 void loop() {
+  if(digitalRead(RELAY_PIN) != power_on) {
     digitalWrite(RELAY_PIN, power_on);
+  }
 }
